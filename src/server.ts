@@ -16,7 +16,7 @@ async function main() {
   const memory = await initMemory({ projectKey, pluginId, baseDir, markdownExport: true })
 
   const server = new Server(
-    { name: 'plugin-memory', version: '0.1.0' },
+    { name: 'plugin-memory', version: '1.0.0' },
     { capabilities: { tools: {} } }
   )
 
