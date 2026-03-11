@@ -10,11 +10,35 @@ description: >
   plugin-memory integration.
 ---
 
+You are helping a developer integrate `plugin-memory` into a Claude-based plugin they are building. Your task is to write correct, idiomatic TypeScript integration code.
+
+## Initialization
+
+Call `initMemory()` once at plugin startup. It handles directory creation, schema migration, WAL mode, and FTS5 initialization automatically.
+
+```typescript
+import { initMemory } from 'plugin-memory'
+
+const memory = await initMemory({
+  projectKey: deriveProjectKey(process.cwd()), // slug derived from absolute CWD
+  pluginId: 'my-plugin',
+})
+```
+
+`deriveProjectKey(path)` — lowercase, replace non-alphanumeric with `-`:
+```typescript
+path.toLowerCase().replace(/[^a-z0-9-]/g, '-')
+```
+
+---
+
 # plugin-memory Integration
 
 `plugin-memory` is a local-first persistent memory library for Claude-based plugins. It exposes memory as explicit tool calls backed by SQLite + FTS5. No network calls. No daemons. No cloud.
 
-## Quick reference
+## MCP tool reference (for testing)
+
+These tools are available during development via the auto-registered MCP server. In a shipped plugin, your plugin server calls the `MemoryClient` methods directly — not these tools.
 
 | Task | Tool | Scope |
 |------|------|-------|
@@ -36,26 +60,6 @@ description: >
 | Errors, failure modes, workarounds | `references/troubleshooting-workarounds.md` |
 
 Load only the reference required for the current task.
-
----
-
-## Initialization
-
-Call `initMemory()` once at plugin startup. It handles directory creation, schema migration, WAL mode, and FTS5 initialization automatically.
-
-```typescript
-import { initMemory } from 'plugin-memory'
-
-const memory = await initMemory({
-  projectKey: deriveProjectKey(process.cwd()), // slug derived from absolute CWD
-  pluginId: 'my-plugin',
-})
-```
-
-`deriveProjectKey(path)` — lowercase, replace non-alphanumeric with `-`:
-```typescript
-path.toLowerCase().replace(/[^a-z0-9-]/g, '-')
-```
 
 ---
 
@@ -115,6 +119,7 @@ user        ← cross-project preferences, global conventions
 | Search without scoping | Always pass `scope` to `search_memory` |
 | Skip `initMemory()` | Must be called before any tool use |
 | Use `plugin:X` for cross-plugin data | Promote to `project` scope instead |
+| Call `initMemory()` inside a request handler | Call `initMemory()` once at plugin startup and pass the `MemoryClient` to handlers |
 
 ---
 
