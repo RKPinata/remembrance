@@ -1,0 +1,11 @@
+{
+  "name": "plugin-memory",
+  "description": "SQLite-backed persistent memory layer for Claude-based plugins. Guides correct initMemory() integration, scope model, and memory discipline when building memory-enabled plugins.",
+  "version": "1.0.0",
+  "mcpServers": {
+    "plugin-memory": {
+      "command": "npx",
+      "args": ["-y", "--package", "plugin-memory@latest", "plugin-memory-server"]
+    }
+  }
+}
