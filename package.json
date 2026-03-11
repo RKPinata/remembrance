@@ -1,7 +1,17 @@
 {
   "name": "plugin-memory",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "SQLite-backed reusable memory layer for Claude-based plugin ecosystems",
+  "license": "MIT",
+  "author": {
+    "name": "RKPinata",
+    "email": "teukutiga@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RKPinata/plugin-memory.git"
+  },
+  "keywords": ["claude", "mcp", "memory", "sqlite", "plugin", "agent"],
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -11,12 +21,17 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "bin": {
+    "plugin-memory-server": "./dist-server/server.js"
+  },
+  "files": ["dist", "dist-server"],
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean && cp -r src/migrations dist/migrations",
-    "build:server": "tsup src/server.ts --format esm --dts --clean --out-dir dist-server",
+    "build:server": "tsup src/server.ts --format esm --dts --clean --out-dir dist-server && cp -r src/migrations dist-server/migrations",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm run build:server"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
@@ -24,6 +39,9 @@
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.8",
