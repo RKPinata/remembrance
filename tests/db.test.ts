@@ -4,7 +4,7 @@ import { rmSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 
-const testDir = join(tmpdir(), 'plugin-memory-test-db')
+const testDir = join(tmpdir(), 'remambrance-test-db')
 
 afterEach(() => {
   if (existsSync(testDir)) {

@@ -1,4 +1,4 @@
-# Troubleshooting and Workarounds — plugin-memory
+# Troubleshooting and Workarounds — remambrance
 
 ---
 
@@ -104,7 +104,7 @@ for (const s of states) {
 
 ## 7. Schema migration fails on library upgrade
 
-**Symptom**: `initMemory()` throws on startup after updating `plugin-memory` version.
+**Symptom**: `initMemory()` throws on startup after updating `remambrance` version.
 
 **Cause**: Migration runner encountered an unexpected schema state.
 

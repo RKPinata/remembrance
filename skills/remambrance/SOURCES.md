@@ -1,8 +1,8 @@
-# Sources — plugin-memory skill
+# Sources — remambrance skill
 
 | # | Source | Path | Trust | Confidence | Contribution |
 |---|--------|------|-------|------------|--------------|
-| 1 | plugin-memory README | `./README.md` | canonical | high | All API signatures, scope model, storage design, migration strategy, failure modes, security model, use case patterns |
+| 1 | remambrance README | `./README.md` | canonical | high | All API signatures, scope model, storage design, migration strategy, failure modes, security model, use case patterns |
 
 ## Coverage matrix
 
@@ -32,7 +32,7 @@ The single canonical source covers all five required integration-documentation d
 | Class: integration-documentation | adopted | Library integration with typed API surface, runtime config, use cases, failure modes |
 | Pattern: Domain Expert (SKILL.md + References) | adopted | Domain too broad for single file; conditional loading keeps context small |
 | Three reference files (api-surface, use-cases, troubleshooting) | adopted | Required by integration-documentation class |
-| Skill name: `plugin-memory` | adopted | Matches package name exactly; clear trigger match |
+| Skill name: `remambrance` | adopted | Matches package name exactly; clear trigger match |
 
 ## Changelog
 

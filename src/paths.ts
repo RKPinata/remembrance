@@ -2,7 +2,7 @@ import { platform } from 'node:process'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
 
-const APP_NAME = 'plugin-memory'
+const APP_NAME = 'remambrance'
 
 export function getMemoryBaseDir(override?: string): string {
   if (override) return override

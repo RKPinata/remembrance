@@ -1,4 +1,4 @@
-// MCP tool definitions for the plugin-memory tool surface.
+// MCP tool definitions for the remambrance tool surface.
 // These are registered with an MCP server via @modelcontextprotocol/sdk.
 // Kept as const to preserve literal types for tooling.
 

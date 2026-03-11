@@ -2,7 +2,7 @@
 description: Show memory entries stored for this project — scopes, types, and counts
 ---
 
-Prerequisite: the plugin-memory MCP server must be running and scoped to the current
+Prerequisite: the remambrance MCP server must be running and scoped to the current
 project directory. If it was started from a different directory, the entries shown
 will not match this project.
 

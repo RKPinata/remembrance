@@ -1,4 +1,4 @@
-# Common Use Cases — plugin-memory
+# Common Use Cases — remambrance
 
 Covered patterns:
 

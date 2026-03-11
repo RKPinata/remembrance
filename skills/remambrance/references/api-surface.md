@@ -1,4 +1,4 @@
-# API Surface — plugin-memory
+# API Surface — remambrance
 
 All tools are accessed via the `MemoryClient` returned by `initMemory()`.
 

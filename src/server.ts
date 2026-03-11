@@ -10,14 +10,14 @@ import { cwd } from 'node:process'
 
 async function main() {
   const projectKey =
-    process.env.PLUGIN_MEMORY_PROJECT_KEY ?? deriveProjectKey(cwd())
-  const pluginId = process.env.PLUGIN_MEMORY_PLUGIN_ID ?? 'core'
-  const baseDir = process.env.PLUGIN_MEMORY_BASE_DIR
+    process.env.REMAMBRANCE_PROJECT_KEY ?? deriveProjectKey(cwd())
+  const pluginId = process.env.REMAMBRANCE_PLUGIN_ID ?? 'core'
+  const baseDir = process.env.REMAMBRANCE_BASE_DIR
 
   const memory = await initMemory({ projectKey, pluginId, baseDir, markdownExport: true })
 
   const server = new Server(
-    { name: 'plugin-memory', version: '1.0.0' },
+    { name: 'remambrance', version: '1.0.0' },
     { capabilities: { tools: {} } }
   )
 

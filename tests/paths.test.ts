@@ -8,9 +8,9 @@ describe('getMemoryBaseDir', () => {
     expect(dir.length).toBeGreaterThan(0)
   })
 
-  it('returns a path ending in plugin-memory', () => {
+  it('returns a path ending in remambrance', () => {
     const dir = getMemoryBaseDir()
-    expect(dir).toMatch(/plugin-memory$/)
+    expect(dir).toMatch(/remambrance$/)
   })
 
   it('accepts a baseDir override', () => {
@@ -36,13 +36,13 @@ describe('deriveProjectKey', () => {
   })
 
   it('produces stable output for the same input', () => {
-    const key1 = deriveProjectKey('/Users/danish/Repo/plugin-memory')
-    const key2 = deriveProjectKey('/Users/danish/Repo/plugin-memory')
+    const key1 = deriveProjectKey('/Users/danish/Repo/remambrance')
+    const key2 = deriveProjectKey('/Users/danish/Repo/remambrance')
     expect(key1).toBe(key2)
   })
 
   it('produces a non-empty key', () => {
-    const key = deriveProjectKey('/Users/danish/Repo/plugin-memory')
+    const key = deriveProjectKey('/Users/danish/Repo/remambrance')
     expect(key.length).toBeGreaterThan(0)
   })
 

@@ -6,7 +6,7 @@ import { rmSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 
-const testDir = join(tmpdir(), 'plugin-memory-test-handlers')
+const testDir = join(tmpdir(), 'remambrance-test-handlers')
 let db: Database.Database
 let handlers: ReturnType<typeof createHandlers>
 

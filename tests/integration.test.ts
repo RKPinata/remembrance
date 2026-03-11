@@ -4,7 +4,7 @@ import { rmSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 
-const testBaseDir = join(tmpdir(), 'plugin-memory-integration')
+const testBaseDir = join(tmpdir(), 'remambrance-integration')
 let memory: Awaited<ReturnType<typeof initMemory>>
 
 beforeAll(async () => {

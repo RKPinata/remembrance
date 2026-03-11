@@ -1,23 +1,23 @@
 ---
-name: plugin-memory
+name: remambrance
 description: >
-  Guides correct integration with the plugin-memory library — SQLite-backed persistent memory
+  Guides correct integration with the remambrance library — SQLite-backed persistent memory
   for Claude-based plugins. Use when calling initMemory, reading or writing memory entries,
-  searching memory, using scopes, integrating plugin-memory into a plugin, adding persistent
+  searching memory, using scopes, integrating remambrance into a plugin, adding persistent
   memory to an agent, or implementing the memory tool interface. Trigger phrases: use
-  plugin-memory, read memory, write memory, search memory, initMemory, store a decision to
+  remambrance, read memory, write memory, search memory, initMemory, store a decision to
   memory, load memory at session start, persist this to memory, add memory to my plugin,
-  plugin-memory integration.
+  remambrance integration.
 ---
 
-You are helping a developer integrate `plugin-memory` into a Claude-based plugin they are building. Your task is to write correct, idiomatic TypeScript integration code.
+You are helping a developer integrate `remambrance` into a Claude-based plugin they are building. Your task is to write correct, idiomatic TypeScript integration code.
 
 ## Initialization
 
 Call `initMemory()` once at plugin startup. It handles directory creation, schema migration, WAL mode, and FTS5 initialization automatically.
 
 ```typescript
-import { initMemory } from 'plugin-memory'
+import { initMemory } from 'remambrance'
 
 const memory = await initMemory({
   projectKey: deriveProjectKey(process.cwd()), // slug derived from absolute CWD
@@ -32,9 +32,9 @@ path.toLowerCase().replace(/[^a-z0-9-]/g, '-')
 
 ---
 
-# plugin-memory Integration
+# remambrance Integration
 
-`plugin-memory` is a local-first persistent memory library for Claude-based plugins. It exposes memory as explicit tool calls backed by SQLite + FTS5. No network calls. No daemons. No cloud.
+`remambrance` is a local-first persistent memory library for Claude-based plugins. It exposes memory as explicit tool calls backed by SQLite + FTS5. No network calls. No daemons. No cloud.
 
 ## MCP tool reference (for testing)
 
@@ -126,9 +126,9 @@ user        ← cross-project preferences, global conventions
 ## Storage path (runtime)
 
 ```
-macOS:   ~/Library/Application Support/plugin-memory/<project-key>/
-Linux:   ~/.local/share/plugin-memory/<project-key>/
-Windows: %APPDATA%\plugin-memory\<project-key>\
+macOS:   ~/Library/Application Support/remambrance/<project-key>/
+Linux:   ~/.local/share/remambrance/<project-key>/
+Windows: %APPDATA%\\remambrance\\<project-key>\\
 ```
 
 Each project directory contains `memory.db`, `memory.config.json`, and `exports/`.

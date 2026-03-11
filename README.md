@@ -1,11 +1,11 @@
-# plugin-memory
+# remambrance
 
 SQLite-backed persistent memory layer for Claude-based plugins.
 
 ## Installation
 
 ```bash
-npm install plugin-memory
+npm install remambrance
 ```
 
 ## Quick start
@@ -14,7 +14,7 @@ Call `initMemory()` once at plugin startup. It handles directory creation, schem
 migration, WAL mode, and FTS5 initialization automatically.
 
 ```typescript
-import { initMemory, deriveProjectKey } from 'plugin-memory'
+import { initMemory, deriveProjectKey } from 'remambrance'
 
 const memory = await initMemory({
   projectKey: deriveProjectKey(process.cwd()),
@@ -82,9 +82,9 @@ across plugins. Use `user` only for persistent preferences valid on every projec
 ## Storage paths
 
 ```
-macOS:   ~/Library/Application Support/plugin-memory/<project-key>/
-Linux:   ~/.local/share/plugin-memory/<project-key>/
-Windows: %APPDATA%\plugin-memory\<project-key>\
+macOS:   ~/Library/Application Support/remambrance/<project-key>/
+Linux:   ~/.local/share/remambrance/<project-key>/
+Windows: %APPDATA%\\remambrance\\<project-key>\\
 ```
 
 Each project directory contains `memory.db`, `memory.config.json`, and `exports/`.
@@ -97,7 +97,7 @@ Install the Claude Code plugin from the RKPinata marketplace to get:
 - A `/memory-status` command to inspect stored entries
 
 ```
-/plugin install plugin-memory@rkpinata-plugins
+/plugin install remambrance@rkpinata-plugins
 ```
 
 ## License

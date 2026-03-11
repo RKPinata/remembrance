@@ -1,11 +1,11 @@
 {
-  "name": "plugin-memory",
+  "name": "remambrance",
   "description": "SQLite-backed persistent memory layer for Claude-based plugins. Guides correct initMemory() integration, scope model, and memory discipline when building memory-enabled plugins.",
   "version": "1.0.0",
   "mcpServers": {
-    "plugin-memory": {
+    "remambrance": {
       "command": "npx",
-      "args": ["-y", "--package", "plugin-memory@latest", "plugin-memory-server"]
+      "args": ["-y", "--package", "remambrance@latest", "remambrance-server"]
     }
   }
 }

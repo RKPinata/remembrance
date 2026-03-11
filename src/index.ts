@@ -56,7 +56,7 @@ export async function initMemory(options: InitMemoryOptions): Promise<MemoryClie
           tags: params.tags ?? [],
           timestamp: result.timestamp,
         }).catch(err => {
-          console.error('[plugin-memory] Markdown export failed:', err)
+          console.error('[remambrance] Markdown export failed:', err)
         })
       }
 

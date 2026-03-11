@@ -1,5 +1,5 @@
 {
-  "name": "plugin-memory",
+  "name": "remambrance",
   "version": "1.0.0",
   "description": "SQLite-backed reusable memory layer for Claude-based plugin ecosystems",
   "license": "MIT",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RKPinata/plugin-memory.git"
+    "url": "git+https://github.com/RKPinata/remambrance.git"
   },
   "keywords": [
     "claude",
@@ -29,7 +29,7 @@
     }
   },
   "bin": {
-    "plugin-memory-server": "dist-server/server.js"
+    "remambrance-server": "dist-server/server.js"
   },
   "files": [
     "dist",
