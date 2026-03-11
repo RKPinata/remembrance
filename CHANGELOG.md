@@ -6,8 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [1.0.0] - 2026-03-11
 
-### Initial Release as Remambrance
-- Renamed project from `plugin-memory` to `remambrance`
+### Initial Release as remembrance
+
+- Renamed project from `plugin-memory` to `remembrance`
 - SQLite-backed memory layer with FTS5 full-text search
 - Eight MCP tools: read_memory, write_memory, search_memory, update_memory,
   forget_memory, list_memory_scopes, rebuild_index, export_memory

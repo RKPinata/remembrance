@@ -2,11 +2,12 @@
 description: Show memory entries stored for this project — scopes, types, and counts
 ---
 
-Prerequisite: the remambrance MCP server must be running and scoped to the current
+Prerequisite: the remembrance MCP server must be running and scoped to the current
 project directory. If it was started from a different directory, the entries shown
 will not match this project.
 
 Steps:
+
 1. Call `list_memory_scopes` with no arguments.
 2. For each scope where entryCount > 0, call `read_memory` with `scope` and `limit: 5`.
 3. Present results as a Markdown table with columns:

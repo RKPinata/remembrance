@@ -5,14 +5,14 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
   CallToolRequestSchema,
-  ListToolsRequestSchema
+  ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 
 // src/paths.ts
 import { platform } from "process";
 import { join } from "path";
 import { homedir } from "os";
-var APP_NAME = "remambrance";
+var APP_NAME = "remembrance";
 function getMemoryBaseDir(override) {
   if (override) return override;
   if (platform === "win32") {
@@ -23,17 +23,33 @@ function getMemoryBaseDir(override) {
   if (platform === "darwin") {
     return join(homedir(), "Library", "Application Support", APP_NAME);
   }
-  const xdgData = process.env.XDG_DATA_HOME ?? join(homedir(), ".local", "share");
+  const xdgData =
+    process.env.XDG_DATA_HOME ?? join(homedir(), ".local", "share");
   return join(xdgData, APP_NAME);
 }
 function deriveProjectKey(absolutePath) {
-  if (!absolutePath || absolutePath.trim() === "/" || absolutePath.trim() === "") {
-    throw new Error(`Cannot derive project key from empty or root path: "${absolutePath}"`);
+  if (
+    !absolutePath ||
+    absolutePath.trim() === "/" ||
+    absolutePath.trim() === ""
+  ) {
+    throw new Error(
+      `Cannot derive project key from empty or root path: "${absolutePath}"`,
+    );
   }
-  const segments = absolutePath.replace(/\\/g, "/").split("/").filter(Boolean).map(
-    (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
-    // strip leading/trailing hyphens within segment
-  ).filter(Boolean);
+  const segments = absolutePath
+    .replace(/\\/g, "/")
+    .split("/")
+    .filter(Boolean)
+    .map(
+      (s) =>
+        s
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, ""),
+      // strip leading/trailing hyphens within segment
+    )
+    .filter(Boolean);
   if (segments.length === 0) {
     throw new Error(`Cannot derive project key from path: "${absolutePath}"`);
   }
@@ -51,7 +67,7 @@ import { fileURLToPath } from "url";
 var __dirname = dirname(fileURLToPath(import.meta.url));
 var MIGRATIONS = [
   { version: 1, file: "migrations/001_initial.sql" },
-  { version: 2, file: "migrations/002_fts5.sql" }
+  { version: 2, file: "migrations/002_fts5.sql" },
 ];
 function openDatabase(projectDir) {
   mkdirSync(projectDir, { recursive: true, mode: 448 });
@@ -74,10 +90,13 @@ function runMigrations(db) {
     )
   `);
   const applied = new Set(
-    db.prepare("SELECT version FROM schema_migrations").all().map((r) => r.version)
+    db
+      .prepare("SELECT version FROM schema_migrations")
+      .all()
+      .map((r) => r.version),
   );
   const insertMigration = db.prepare(
-    "INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)"
+    "INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)",
   );
   for (const { version, file } of MIGRATIONS) {
     if (applied.has(version)) continue;
@@ -88,12 +107,12 @@ function runMigrations(db) {
     } catch {
       throw new Error(
         `Migration file not found: ${sqlPath}
-Ensure the build step copied src/migrations/ to dist/migrations/ (run: npm run build)`
+Ensure the build step copied src/migrations/ to dist/migrations/ (run: npm run build)`,
       );
     }
     db.transaction(() => {
       db.exec(sql);
-      insertMigration.run(version, (/* @__PURE__ */ new Date()).toISOString());
+      insertMigration.run(version, /* @__PURE__ */ new Date().toISOString());
     })();
   }
   if (MIGRATIONS.length > 0) {
@@ -123,7 +142,7 @@ var SECRET_PATTERNS = [
   // password assignment
   /(?:postgresql|mysql|mongodb|redis):\/\/[^:]+:[^@]+@/,
   // DB connection string with password
-  /sk-[a-zA-Z0-9]{32,}/
+  /sk-[a-zA-Z0-9]{32,}/,
   // OpenAI-style secret key
 ];
 function detectSecrets(content) {
@@ -132,7 +151,7 @@ function detectSecrets(content) {
 function assertSafe(content) {
   if (detectSecrets(content)) {
     throw new Error(
-      "Content appears to contain a secret or credential. Memory entries must not contain API keys, tokens, passwords, or private keys."
+      "Content appears to contain a secret or credential. Memory entries must not contain API keys, tokens, passwords, or private keys.",
     );
   }
 }
@@ -154,7 +173,7 @@ function deserialise(raw) {
     history: JSON.parse(raw.history),
     data: JSON.parse(raw.data),
     createdAt: raw.created_at,
-    updatedAt: raw.updated_at
+    updatedAt: raw.updated_at,
   };
 }
 function createHandlers(db, opts) {
@@ -168,21 +187,23 @@ function createHandlers(db, opts) {
       source,
       confidence = 1,
       verified = false,
-      data = {}
+      data = {},
     } = params;
     if (Buffer.byteLength(content, "utf8") > maxContentBytes) {
       throw new Error(`Content too long: max ${maxContentBytes} bytes allowed`);
     }
     assertSafe(content);
     const id = randomUUID();
-    const now = (/* @__PURE__ */ new Date()).toISOString();
-    db.prepare(`
+    const now = /* @__PURE__ */ new Date().toISOString();
+    db.prepare(
+      `
       INSERT INTO entries
         (id, scope, plugin_id, project_key, type, content, tags, source,
          confidence, verified, deleted, history, data, created_at, updated_at)
       VALUES
         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, '[]', ?, ?, ?)
-    `).run(
+    `,
+    ).run(
       id,
       scope,
       pluginId,
@@ -195,13 +216,14 @@ function createHandlers(db, opts) {
       verified ? 1 : 0,
       JSON.stringify(data),
       now,
-      now
+      now,
     );
     return { id, timestamp: now };
   }
   function readMemory(params) {
     const { scope, type, tags, limit = 10 } = params;
-    let sql = "SELECT * FROM entries WHERE scope = ? AND project_key = ? AND deleted = 0";
+    let sql =
+      "SELECT * FROM entries WHERE scope = ? AND project_key = ? AND deleted = 0";
     const bindings = [scope, projectKey];
     if (type) {
       sql += " AND type = ?";
@@ -248,17 +270,19 @@ function createHandlers(db, opts) {
   }
   function updateMemory(params) {
     const { id, content, tags, confidence, verified } = params;
-    const existing = db.prepare(
-      "SELECT * FROM entries WHERE id = ? AND deleted = 0"
-    ).get(id);
+    const existing = db
+      .prepare("SELECT * FROM entries WHERE id = ? AND deleted = 0")
+      .get(id);
     if (!existing) throw new Error(`Entry not found: ${id}`);
-    const now = (/* @__PURE__ */ new Date()).toISOString();
+    const now = /* @__PURE__ */ new Date().toISOString();
     const history = JSON.parse(existing.history);
     const updates = ["updated_at = ?"];
     const bindings = [now];
     if (content !== void 0) {
       if (Buffer.byteLength(content, "utf8") > maxContentBytes) {
-        throw new Error(`Content too long: max ${maxContentBytes} bytes allowed`);
+        throw new Error(
+          `Content too long: max ${maxContentBytes} bytes allowed`,
+        );
       }
       assertSafe(content);
       history.push(existing.content);
@@ -278,36 +302,42 @@ function createHandlers(db, opts) {
       bindings.push(verified ? 1 : 0);
     }
     bindings.push(id);
-    db.prepare(`UPDATE entries SET ${updates.join(", ")} WHERE id = ?`).run(...bindings);
+    db.prepare(`UPDATE entries SET ${updates.join(", ")} WHERE id = ?`).run(
+      ...bindings,
+    );
     return { id, updatedAt: now };
   }
   function forgetMemory(params) {
-    const now = (/* @__PURE__ */ new Date()).toISOString();
+    const now = /* @__PURE__ */ new Date().toISOString();
     db.prepare(
-      "UPDATE entries SET deleted = 1, updated_at = ? WHERE id = ?"
+      "UPDATE entries SET deleted = 1, updated_at = ? WHERE id = ?",
     ).run(now, params.id);
     return { deleted: true };
   }
   function listMemoryScopes(params) {
     const pKey = params?.projectKey ?? projectKey;
-    const rows = db.prepare(`
+    const rows = db
+      .prepare(
+        `
       SELECT scope, COUNT(*) as entry_count, MAX(updated_at) as last_updated
       FROM entries
       WHERE deleted = 0 AND project_key = ?
       GROUP BY scope
       ORDER BY last_updated DESC
-    `).all(pKey);
+    `,
+      )
+      .all(pKey);
     return rows.map((r) => ({
       scope: r.scope,
       entryCount: r.entry_count,
-      lastUpdated: r.last_updated
+      lastUpdated: r.last_updated,
     }));
   }
   function rebuildIndex() {
     db.exec("INSERT INTO entries_fts(entries_fts) VALUES('rebuild')");
-    const { n } = db.prepare(
-      "SELECT COUNT(*) as n FROM entries WHERE deleted = 0"
-    ).get();
+    const { n } = db
+      .prepare("SELECT COUNT(*) as n FROM entries WHERE deleted = 0")
+      .get();
     return { entriesIndexed: n };
   }
   return {
@@ -317,12 +347,18 @@ function createHandlers(db, opts) {
     updateMemory,
     forgetMemory,
     listMemoryScopes,
-    rebuildIndex
+    rebuildIndex,
   };
 }
 
 // src/export.ts
-import { writeFileSync, appendFileSync, mkdirSync as mkdirSync2, readFileSync as readFileSync2, existsSync } from "fs";
+import {
+  writeFileSync,
+  appendFileSync,
+  mkdirSync as mkdirSync2,
+  readFileSync as readFileSync2,
+  existsSync,
+} from "fs";
 import { dirname as dirname2, join as join3 } from "path";
 async function exportToJsonl(db, params) {
   const { outputPath, scope, projectKey } = params;
@@ -335,7 +371,9 @@ async function exportToJsonl(db, params) {
   const rows = db.prepare(sql).all(...bindings);
   mkdirSync2(dirname2(outputPath), { recursive: true });
   const lines = rows.map((r) => JSON.stringify(r)).join("\n");
-  writeFileSync(outputPath, rows.length > 0 ? lines + "\n" : "", { encoding: "utf8" });
+  writeFileSync(outputPath, rows.length > 0 ? lines + "\n" : "", {
+    encoding: "utf8",
+  });
   return { exportedPath: outputPath, entryCount: rows.length };
 }
 async function appendToMarkdown(params) {
@@ -351,7 +389,7 @@ async function appendToMarkdown(params) {
     `**Tags:** ${tagStr}`,
     ``,
     `---`,
-    ``
+    ``,
   ].join("\n");
   appendFileSync(filePath, entry, "utf8");
 }
@@ -364,7 +402,7 @@ var MARKDOWN_FILE_MAP = {
   summary: "summaries.md",
   glossary: "glossary.md",
   state: "state.md",
-  constraint: "constraints.md"
+  constraint: "constraints.md",
 };
 function getMarkdownPath(exportsDir, type) {
   return join3(exportsDir, MARKDOWN_FILE_MAP[type] ?? "misc.md");
@@ -378,13 +416,14 @@ import { join as join4 } from "path";
 var MEMORY_TOOLS = [
   {
     name: "read_memory",
-    description: "Retrieve persistent memory entries by scope, type, or tags. Call at session start and before major task steps.",
+    description:
+      "Retrieve persistent memory entries by scope, type, or tags. Call at session start and before major task steps.",
     inputSchema: {
       type: "object",
       properties: {
         scope: {
           type: "string",
-          description: "Memory scope: user, project, or plugin:<id>"
+          description: "Memory scope: user, project, or plugin:<id>",
         },
         type: {
           type: "string",
@@ -397,25 +436,27 @@ var MEMORY_TOOLS = [
             "summary",
             "glossary",
             "state",
-            "constraint"
-          ]
+            "constraint",
+          ],
         },
         tags: { type: "array", items: { type: "string" } },
         limit: { type: "number", minimum: 1, maximum: 100, default: 10 },
-        projectKey: { type: "string" }
+        projectKey: { type: "string" },
       },
-      required: ["scope"]
-    }
+      required: ["scope"],
+    },
   },
   {
     name: "write_memory",
-    description: "Store a new persistent memory entry. Call when a decision is made, a pattern is identified, or a preference is confirmed. Never write secrets, tokens, or credentials.",
+    description:
+      "Store a new persistent memory entry. Call when a decision is made, a pattern is identified, or a preference is confirmed. Never write secrets, tokens, or credentials.",
     inputSchema: {
       type: "object",
       properties: {
         scope: {
           type: "string",
-          description: "Memory scope: user, project, or plugin:<id>. Default: project."
+          description:
+            "Memory scope: user, project, or plugin:<id>. Default: project.",
         },
         type: {
           type: "string",
@@ -428,57 +469,63 @@ var MEMORY_TOOLS = [
             "summary",
             "glossary",
             "state",
-            "constraint"
-          ]
+            "constraint",
+          ],
         },
         content: { type: "string", maxLength: 8192 },
         tags: { type: "array", items: { type: "string" } },
         source: { type: "string", description: 'File path, URL, or "session"' },
         confidence: { type: "number", minimum: 0, maximum: 1, default: 1 },
-        verified: { type: "boolean", default: false }
+        verified: { type: "boolean", default: false },
       },
-      required: ["scope", "type", "content"]
-    }
+      required: ["scope", "type", "content"],
+    },
   },
   {
     name: "search_memory",
-    description: "Full-text search across memory entries. Use when exploring prior decisions or looking for specific context.",
+    description:
+      "Full-text search across memory entries. Use when exploring prior decisions or looking for specific context.",
     inputSchema: {
       type: "object",
       properties: {
         query: { type: "string", description: "Keyword search terms" },
         scope: { type: "string" },
         type: { type: "string" },
-        limit: { type: "number", minimum: 1, maximum: 100, default: 10 }
+        limit: { type: "number", minimum: 1, maximum: 100, default: 10 },
       },
-      required: ["query"]
-    }
+      required: ["query"],
+    },
   },
   {
     name: "update_memory",
-    description: "Update an existing memory entry. Prior content is preserved in history. Use when an entry is superseded or corrected.",
+    description:
+      "Update an existing memory entry. Prior content is preserved in history. Use when an entry is superseded or corrected.",
     inputSchema: {
       type: "object",
       properties: {
-        id: { type: "string", description: "Entry UUID from write_memory or read_memory" },
+        id: {
+          type: "string",
+          description: "Entry UUID from write_memory or read_memory",
+        },
         content: { type: "string", maxLength: 8192 },
         tags: { type: "array", items: { type: "string" } },
         confidence: { type: "number", minimum: 0, maximum: 1 },
-        verified: { type: "boolean" }
+        verified: { type: "boolean" },
       },
-      required: ["id"]
-    }
+      required: ["id"],
+    },
   },
   {
     name: "forget_memory",
-    description: "Soft-delete a memory entry. Entry is hidden from reads immediately and permanently purged after 30 days.",
+    description:
+      "Soft-delete a memory entry. Entry is hidden from reads immediately and permanently purged after 30 days.",
     inputSchema: {
       type: "object",
       properties: {
-        id: { type: "string" }
+        id: { type: "string" },
       },
-      required: ["id"]
-    }
+      required: ["id"],
+    },
   },
   {
     name: "list_memory_scopes",
@@ -486,29 +533,34 @@ var MEMORY_TOOLS = [
     inputSchema: {
       type: "object",
       properties: {
-        projectKey: { type: "string" }
-      }
-    }
+        projectKey: { type: "string" },
+      },
+    },
   },
   {
     name: "rebuild_index",
-    description: "Reconstruct the FTS5 full-text search index from the SQLite source. Safe to run at any time. Use after import or suspected index corruption.",
+    description:
+      "Reconstruct the FTS5 full-text search index from the SQLite source. Safe to run at any time. Use after import or suspected index corruption.",
     inputSchema: {
       type: "object",
-      properties: {}
-    }
+      properties: {},
+    },
   },
   {
     name: "export_memory",
-    description: "Export all memory entries to a portable JSONL file for backup or migration.",
+    description:
+      "Export all memory entries to a portable JSONL file for backup or migration.",
     inputSchema: {
       type: "object",
       properties: {
-        outputPath: { type: "string", description: "Absolute path for the output file" },
-        scope: { type: "string", description: "Filter by scope (optional)" }
-      }
-    }
-  }
+        outputPath: {
+          type: "string",
+          description: "Absolute path for the output file",
+        },
+        scope: { type: "string", description: "Filter by scope (optional)" },
+      },
+    },
+  },
 ];
 
 // src/index.ts
@@ -518,14 +570,18 @@ async function initMemory(options) {
     pluginId,
     baseDir: baseDirOverride,
     markdownExport = false,
-    maxContentBytes = 8192
+    maxContentBytes = 8192,
   } = options;
   const baseDir = getMemoryBaseDir(baseDirOverride);
   const projectDir = resolveProjectDir(projectKey, baseDir);
   const exportsDir = join4(projectDir, "exports");
   mkdirSync3(exportsDir, { recursive: true, mode: 448 });
   const { db } = openDatabase(projectDir);
-  const handlers = createHandlers(db, { projectKey, pluginId, maxContentBytes });
+  const handlers = createHandlers(db, {
+    projectKey,
+    pluginId,
+    maxContentBytes,
+  });
   const client = {
     readMemory: handlers.readMemory,
     searchMemory: handlers.searchMemory,
@@ -542,24 +598,25 @@ async function initMemory(options) {
           type: params.type,
           content: params.content,
           tags: params.tags ?? [],
-          timestamp: result.timestamp
+          timestamp: result.timestamp,
         }).catch((err) => {
-          console.error("[remambrance] Markdown export failed:", err);
+          console.error("[remembrance] Markdown export failed:", err);
         });
       }
       return result;
     },
     async exportMemory(params) {
-      const outputPath = params?.outputPath ?? join4(exportsDir, "memory-export.jsonl");
+      const outputPath =
+        params?.outputPath ?? join4(exportsDir, "memory-export.jsonl");
       return exportToJsonl(db, {
         outputPath,
         scope: params?.scope,
-        projectKey
+        projectKey,
       });
     },
     close() {
       closeDatabase(db);
-    }
+    },
   };
   return client;
 }
@@ -567,16 +624,22 @@ async function initMemory(options) {
 // src/server.ts
 import { cwd } from "process";
 async function main() {
-  const projectKey = process.env.REMAMBRANCE_PROJECT_KEY ?? deriveProjectKey(cwd());
-  const pluginId = process.env.REMAMBRANCE_PLUGIN_ID ?? "core";
-  const baseDir = process.env.REMAMBRANCE_BASE_DIR;
-  const memory = await initMemory({ projectKey, pluginId, baseDir, markdownExport: true });
+  const projectKey =
+    process.env.remembrance_PROJECT_KEY ?? deriveProjectKey(cwd());
+  const pluginId = process.env.remembrance_PLUGIN_ID ?? "core";
+  const baseDir = process.env.remembrance_BASE_DIR;
+  const memory = await initMemory({
+    projectKey,
+    pluginId,
+    baseDir,
+    markdownExport: true,
+  });
   const server = new Server(
-    { name: "remambrance", version: "1.0.0" },
-    { capabilities: { tools: {} } }
+    { name: "remembrance", version: "1.0.0" },
+    { capabilities: { tools: {} } },
   );
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
-    tools: [...MEMORY_TOOLS]
+    tools: [...MEMORY_TOOLS],
   }));
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args = {} } = request.params;
@@ -611,12 +674,12 @@ async function main() {
           throw new Error(`Unknown tool: ${name}`);
       }
       return {
-        content: [{ type: "text", text: JSON.stringify(result, null, 2) }]
+        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
       };
     } catch (error) {
       return {
         content: [{ type: "text", text: `Error: ${error.message}` }],
-        isError: true
+        isError: true,
       };
     }
   });

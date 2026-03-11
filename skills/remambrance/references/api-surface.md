@@ -1,4 +1,4 @@
-# API Surface — remambrance
+# API Surface — remembrance
 
 All tools are accessed via the `MemoryClient` returned by `initMemory()`.
 
@@ -9,6 +9,7 @@ All tools are accessed via the `MemoryClient` returned by `initMemory()`.
 Retrieve entries from memory by scope, type, or tags.
 
 **Signature**
+
 ```typescript
 memory.readMemory({
   scope: 'user' | 'project' | 'plugin',
@@ -20,6 +21,7 @@ memory.readMemory({
 ```
 
 **Returns**
+
 ```typescript
 {
   id: string,
@@ -46,6 +48,7 @@ memory.readMemory({
 Store a new persistent memory entry.
 
 **Signature**
+
 ```typescript
 memory.writeMemory({
   scope: 'user' | 'project' | 'plugin',
@@ -59,6 +62,7 @@ memory.writeMemory({
 ```
 
 **Guardrails**:
+
 - Content must not contain credentials, API keys, or tokens
 - Max content length: 8192 bytes
 - Library sanitises content and aborts if secret patterns detected
@@ -72,6 +76,7 @@ memory.writeMemory({
 Full-text search across memory content using SQLite FTS5.
 
 **Signature**
+
 ```typescript
 memory.searchMemory({
   query: string,
@@ -82,6 +87,7 @@ memory.searchMemory({
 ```
 
 **Returns**
+
 ```typescript
 {
   id: string,
@@ -105,6 +111,7 @@ memory.searchMemory({
 Update an existing entry. Non-destructive — prior content stored in `history`.
 
 **Signature**
+
 ```typescript
 memory.updateMemory({
   id: string,
@@ -125,6 +132,7 @@ memory.updateMemory({
 Delete a memory entry. Soft-delete first; hard-delete after 30-day retention window.
 
 **Signature**
+
 ```typescript
 memory.forgetMemory({
   id: string,
@@ -142,6 +150,7 @@ memory.forgetMemory({
 Enumerate available scopes and their entry counts.
 
 **Signature**
+
 ```typescript
 memory.listMemoryScopes({
   projectKey?: string,
@@ -149,6 +158,7 @@ memory.listMemoryScopes({
 ```
 
 **Returns**
+
 ```typescript
 {
   scope: string,
@@ -166,6 +176,7 @@ memory.listMemoryScopes({
 Reconstruct the FTS5 search index from the SQLite source of truth.
 
 **Signature**
+
 ```typescript
 memory.rebuildIndex(): Promise<{ entriesIndexed: number }>
 ```
@@ -181,6 +192,7 @@ memory.rebuildIndex(): Promise<{ entriesIndexed: number }>
 Export all memory entries to a portable JSONL file.
 
 **Signature**
+
 ```typescript
 memory.exportMemory({
   outputPath?: string,   // defaults to exports/ in project data dir
@@ -198,22 +210,34 @@ memory.exportMemory({
 
 ```typescript
 export const writeMemoryTool = {
-  name: 'write_memory',
-  description: 'Store a persistent memory entry scoped to the current project.',
+  name: "write_memory",
+  description: "Store a persistent memory entry scoped to the current project.",
   inputSchema: {
-    type: 'object',
+    type: "object",
     properties: {
-      scope:      { type: 'string', enum: ['user', 'project', 'plugin'] },
-      type:       { type: 'string', enum: ['decision', 'adr', 'pattern', 'convention',
-                    'preference', 'summary', 'glossary', 'state', 'constraint'] },
-      content:    { type: 'string', maxLength: 8192 },
-      tags:       { type: 'array', items: { type: 'string' } },
-      source:     { type: 'string' },
-      confidence: { type: 'number', minimum: 0, maximum: 1 },
+      scope: { type: "string", enum: ["user", "project", "plugin"] },
+      type: {
+        type: "string",
+        enum: [
+          "decision",
+          "adr",
+          "pattern",
+          "convention",
+          "preference",
+          "summary",
+          "glossary",
+          "state",
+          "constraint",
+        ],
+      },
+      content: { type: "string", maxLength: 8192 },
+      tags: { type: "array", items: { type: "string" } },
+      source: { type: "string" },
+      confidence: { type: "number", minimum: 0, maximum: 1 },
     },
-    required: ['scope', 'type', 'content'],
+    required: ["scope", "type", "content"],
   },
-}
+};
 ```
 
 ---
