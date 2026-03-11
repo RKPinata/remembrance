@@ -2,17 +2,17 @@
 
 | # | Source | Path | Trust | Confidence | Contribution |
 |---|--------|------|-------|------------|--------------|
-| 1 | Plugin Memory Layer Architecture | `/Users/danish/Repo/plugin-memory/memory-layer-architecture.md` | canonical | high | All API signatures, scope model, storage design, migration strategy, failure modes, security model, use case patterns |
+| 1 | plugin-memory README | `./README.md` | canonical | high | All API signatures, scope model, storage design, migration strategy, failure modes, security model, use case patterns |
 
 ## Coverage matrix
 
 | Dimension | Status | Source |
 |-----------|--------|--------|
-| API surface and behavior contracts | complete | §9 (all 8 tools: inputs, outputs, guardrails) |
-| Configuration/runtime options | complete | §2, §7, §15 (config JSON, WAL, paths, migrations) |
-| Common downstream use cases | complete | §3, §12 (read/write discipline, when to write) |
-| Known issues/failure modes | complete | §12, §7, §14 (WAL concurrency, secret detection, stale entries, FTS sync) |
-| Version/migration variance | complete | §8, §15 (migration runner, user_version, additive-only policy) |
+| API surface and behavior contracts | complete | § MemoryClient API (all 8 tools: inputs, outputs, guardrails) |
+| Configuration/runtime options | complete | § Storage paths, § Quick start (config JSON, WAL, paths, migrations) |
+| Common downstream use cases | complete | § Quick start, § MemoryClient API (read/write discipline, when to write) |
+| Known issues/failure modes | complete | § MemoryClient API, § Quick start (WAL concurrency, secret detection, stale entries, FTS sync) |
+| Version/migration variance | complete | § MemoryClient API (migration runner, user_version, additive-only policy) |
 
 ## Stopping rationale
 
