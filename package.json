@@ -9,9 +9,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/RKPinata/plugin-memory.git"
+    "url": "git+https://github.com/RKPinata/plugin-memory.git"
   },
-  "keywords": ["claude", "mcp", "memory", "sqlite", "plugin", "agent"],
+  "keywords": [
+    "claude",
+    "mcp",
+    "memory",
+    "sqlite",
+    "plugin",
+    "agent"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -22,12 +29,15 @@
     }
   },
   "bin": {
-    "plugin-memory-server": "./dist-server/server.js"
+    "plugin-memory-server": "dist-server/server.js"
   },
-  "files": ["dist", "dist-server"],
+  "files": [
+    "dist",
+    "dist-server"
+  ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean && cp -r src/migrations dist/migrations",
-    "build:server": "tsup src/server.ts --format esm --dts --clean --out-dir dist-server && cp -r src/migrations dist-server/migrations",
+    "build": "tsup src/index.ts --format esm --dts --clean && mkdir -p dist/migrations && cp src/migrations/*.sql dist/migrations/",
+    "build:server": "tsup src/server.ts --format esm --dts --clean --out-dir dist-server && mkdir -p dist-server/migrations && cp src/migrations/*.sql dist-server/migrations/",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
